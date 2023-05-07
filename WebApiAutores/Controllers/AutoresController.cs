@@ -20,7 +20,7 @@ namespace WebApiAutores.Controllers
         [HttpGet] //Accion
         public async Task<ActionResult<List<Autor>>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
-            return await context.Autores.ToListAsync();
+            return await context.Autores.Include(x => x.Libros).ToListAsync();
         }
 
         [HttpPost]
