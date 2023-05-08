@@ -10,24 +10,24 @@ namespace WebApiAutores.Entidades
         public int Id { get; set; } // Propiedad Id
 
         [Required(ErrorMessage = "El campo nombre es requerido")] // El atributo nombre es requerido
-        [StringLength(maximumLength:5, ErrorMessage = "El campo {0} no debe de tener mas de {1} caracteres")]
+        [StringLength(maximumLength: 120, ErrorMessage = "El campo {0} no debe de tener mas de {1} caracteres")]
         //[PrimeraLetraMayuscula]
         public string Nombre { get; set; } // Propiedad Nombre
 
-        [Range(18, 100)]
-        [NotMapped] // Propiedades que no van a corresponder con una columna en la BD
-        public int Edad { get; set; }
+        //[Range(18, 100)]
+        //[NotMapped] // Propiedades que no van a corresponder con una columna en la BD
+        //public int Edad { get; set; }
 
-        [CreditCard]
-        [NotMapped]
-        public string TarjetaDeCredito { get; set; }
+        //[CreditCard]
+        //[NotMapped]
+        //public string TarjetaDeCredito { get; set; }
 
-        [Url]
-        [NotMapped]
-        public string URL { get; set; }
+        //[Url]
+        //[NotMapped]
+        //public string URL { get; set; }
 
-        public int Menor { get; set; }
-        public int Mayor { get; set; }
+        //public int Menor { get; set; }
+        //public int Mayor { get; set; }
 
         public List<Libro> Libros { get; set; }
 
@@ -48,10 +48,10 @@ namespace WebApiAutores.Entidades
             }
 
             // Validar que la el campo Menor sea mas pequeño que Mayor
-            if (Menor > Mayor)
-            {
-                yield return new ValidationResult("Este valor no puede ser mas grande que el campo mayor", new string[] { nameof(Menor) });
-            }
+            //if (Menor > Mayor)
+            //{
+            //    yield return new ValidationResult("Este valor no puede ser mas grande que el campo mayor", new string[] { nameof(Menor) });
+            //}
         }
     }
 }
