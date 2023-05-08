@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApiAutores.Validaciones;
 
 namespace WebApiAutores.Entidades
 {
@@ -10,6 +11,7 @@ namespace WebApiAutores.Entidades
 
         [Required(ErrorMessage = "El campo nombre es requerido")] // El atributo nombre es requerido
         [StringLength(maximumLength:5, ErrorMessage = "El campo {0} no debe de tener mas de {1} caracteres")]
+        [PrimeraLetraMayuscula]
         public string Nombre { get; set; } // Propiedad Nombre
 
         [Range(18, 100)]
