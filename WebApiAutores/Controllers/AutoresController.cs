@@ -18,9 +18,17 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet] //Accion
+        [HttpGet("listado")] // 'api/autores/listado' o 'api/autores'
+        [HttpGet("/listado")] // 'listado' - sobrescribe la base del endpoint
         public async Task<ActionResult<List<Autor>>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
             return await context.Autores.Include(x => x.Libros).ToListAsync();
+        }
+
+        [HttpGet("GetFirstRecord")] // api/autores/GetFirstRecord
+        public async Task<ActionResult<Autor>> PrimerAutor()
+        {
+            return await context.Autores.FirstOrDefaultAsync();
         }
 
         [HttpPost]
