@@ -53,7 +53,8 @@ namespace WebApiAutores
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             // Guardar el Log de todas las respuestas HTTP
-            app.UseMiddleware<LoguearRespuestaHTTPMiddleware>();
+            //app.UseMiddleware<LoguearRespuestaHTTPMiddleware>();
+            app.UseLoguearRespuestaHTTP();
 
 
             app.Map("/ruta1", app =>
