@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text.Json.Serialization;
+using WebApiAutores.Middlewares;
 using WebApiAutores.Servicios;
 
 namespace WebApiAutores
@@ -52,25 +53,7 @@ namespace WebApiAutores
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             // Guardar el Log de todas las respuestas HTTP
-            app.Use(async (contexto, siguiente) =>
-            {
-                using (var ms = new MemoryStream())
-                {
-                    var cuerpoOriginal = contexto.Response.Body;
-                    contexto.Response.Body = ms;
-                    
-                    await siguiente.Invoke();
-
-                    ms.Seek(0, SeekOrigin.Begin);
-                    string respuesta = new StreamReader(ms).ReadToEnd();
-                    ms.Seek(0, SeekOrigin.Begin);
-
-                    await ms.CopyToAsync(cuerpoOriginal);
-                    contexto.Response.Body = cuerpoOriginal;
-
-                    logger.LogInformation(respuesta);
-                }
-            });
+            app.UseMiddleware<LoguearRespuestaHTTPMiddleware>();
 
 
             app.Map("/ruta1", app =>
