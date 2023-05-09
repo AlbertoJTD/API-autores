@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace WebApiAutores.Controllers
 {
     [ApiController]
     [Route("api/autores")] // Este es el ENDPOINT
+    [Authorize] // Protege todos los endpoint
     public class AutoresController: ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -30,6 +32,7 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet("GUID")]
+        [ResponseCache(Duration = 10)] // Duracion de 10 seg.
         public ActionResult obtenerGuids()
         {
             return Ok(new {
@@ -47,6 +50,7 @@ namespace WebApiAutores.Controllers
         [HttpGet] //Accion
         [HttpGet("listado")] // 'api/autores/listado' o 'api/autores'
         [HttpGet("/listado")] // 'listado' - sobrescribe la base del endpoint
+        [Authorize] // Protege este endpoint
         public async Task<ActionResult<List<Autor>>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
             logger.LogInformation("Estamos obteniendo los autores");
