@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json.Serialization;
+using WebApiAutores.Servicios;
 
 namespace WebApiAutores
 {
@@ -19,12 +20,22 @@ namespace WebApiAutores
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddControllers().AddJsonOptions(x => 
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
             );
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
             );
+
+            // Si una clase requiere un IServicio pasale el ServicioA
+            services.AddTransient<IServicio, ServicioA>();
+            //services.AddTransient<ServicioA>(); // Se usa si en que en la clase se especifica que requiere este tipo
+
+            services.AddSingleton<IServicio, ServicioA>(); // Se comparte la misma instancia para todas las peticiones
+            services.AddScoped<IServicio, ServicioA>(); // Se tendran distintas instancias del mismo servicio
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

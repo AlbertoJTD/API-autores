@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApiAutores.Entidades; // Tener acceso a la clase autor
+using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers
 {
@@ -11,10 +12,12 @@ namespace WebApiAutores.Controllers
     public class AutoresController: ControllerBase
     {
         private readonly ApplicationDbContext context;
+        private readonly IServicio servicio;
 
-        public AutoresController(ApplicationDbContext context)
+        public AutoresController(ApplicationDbContext context, IServicio servicio)
         {
             this.context = context;
+            this.servicio = servicio;
         }
 
         [HttpGet] //Accion
