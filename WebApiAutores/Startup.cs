@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using WebApiAutores.Middlewares;
 using WebApiAutores.Servicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using WebApiAutores.Filtros;
 
 namespace WebApiAutores
 {
@@ -26,7 +27,9 @@ namespace WebApiAutores
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers().AddJsonOptions(x => 
+            services.AddControllers(opciones => {
+                opciones.Filters.Add(typeof(FiltroDeExcepcion));
+            }).AddJsonOptions(x => 
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
             );
             services.AddDbContext<ApplicationDbContext>(
@@ -39,6 +42,8 @@ namespace WebApiAutores
             services.AddTransient<ServicioTransient>(); // Se usa si en que en la clase se especifica que requiere este tipo
             services.AddScoped<ServicioScoped>(); // Se tendran distintas instancias del mismo servicio
             services.AddSingleton<ServicioSingleton>(); // Se comparte la misma instancia para todas las peticiones
+            services.AddTransient<MiFiltroDeAccion>();
+            services.AddHostedService<EscribirEnArchivo>();
 
             services.AddResponseCaching();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();

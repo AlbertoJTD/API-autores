@@ -1,0 +1,17 @@
+Proceso iniciado
+Proceso iniciado
+Proceso en ejecucion... 09/05/2023 12:57:54
+Proceso en ejecucion... 09/05/2023 12:57:59
+Proceso en ejecucion... 09/05/2023 12:58:04
+Proceso en ejecucion... 09/05/2023 12:58:09
+Proceso en ejecucion... 09/05/2023 12:58:14
+Proceso en ejecucion... 09/05/2023 12:58:19
+Proceso en ejecucion... 09/05/2023 12:58:24
+Proceso en ejecucion... 09/05/2023 12:58:29
+Proceso en ejecucion... 09/05/2023 12:58:34
+Proceso en ejecucion... 09/05/2023 12:58:39
+Proceso en ejecucion... 09/05/2023 12:58:44
+Proceso en ejecucion... 09/05/2023 12:58:49
+Proceso en ejecucion... 09/05/2023 12:58:54
+Proceso en ejecucion... 09/05/2023 12:58:59
+Proceso Finalizado
