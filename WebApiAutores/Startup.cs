@@ -30,10 +30,15 @@ namespace WebApiAutores
 
             // Si una clase requiere un IServicio pasale el ServicioA
             services.AddTransient<IServicio, ServicioA>();
+
+            services.AddTransient<ServicioTransient>();
+            services.AddScoped<ServicioScoped>();
+            services.AddSingleton<ServicioSingleton>();
+
             //services.AddTransient<ServicioA>(); // Se usa si en que en la clase se especifica que requiere este tipo
 
-            services.AddSingleton<IServicio, ServicioA>(); // Se comparte la misma instancia para todas las peticiones
-            services.AddScoped<IServicio, ServicioA>(); // Se tendran distintas instancias del mismo servicio
+            //services.AddSingleton<IServicio, ServicioA>(); // Se comparte la misma instancia para todas las peticiones
+            //services.AddScoped<IServicio, ServicioA>(); // Se tendran distintas instancias del mismo servicio
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
