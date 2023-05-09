@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApiAutores.Entidades; // Tener acceso a la clase autor
 using WebApiAutores.Filtros;
-using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers
 {
@@ -16,58 +15,20 @@ namespace WebApiAutores.Controllers
     public class AutoresController: ControllerBase
     {
         private readonly ApplicationDbContext context;
-        private readonly IServicio servicio;
-        private readonly ServicioTransient servicioTransient;
-        private readonly ServicioScoped servicioScoped;
-        private readonly ServicioSingleton servicioSingleton;
-        private readonly ILogger<AutoresController> logger;
 
-        public AutoresController(ApplicationDbContext context, IServicio servicio, ServicioTransient servicioTransient, ServicioScoped servicioScoped, ServicioSingleton servicioSingleton, ILogger<AutoresController> logger)
+        public AutoresController(ApplicationDbContext context)
         {
             this.context = context;
-            this.servicio = servicio;
-            this.servicioTransient = servicioTransient;
-            this.servicioScoped = servicioScoped;
-            this.servicioSingleton = servicioSingleton;
-            this.logger = logger;
-        }
-
-        [HttpGet("GUID")]
-        //[ResponseCache(Duration = 10)] // Duracion de 10 seg.
-        [ServiceFilter(typeof(MiFiltroDeAccion))]
-        public ActionResult obtenerGuids()
-        {
-            return Ok(new {
-                AutoresController_Transient = servicioTransient.Guid, // Son distintos
-                servicioA_Transient = servicio.ObtenerTransient(),
-
-                AutoresController_Scoped = servicioScoped.Guid, // son iguales pero cambia al ejecutarse nuevamente
-                servicioA_Scoped = servicio.ObtenerScoped(),
-
-                AutoresController_Singleton = servicioSingleton.Guid, // son iguales
-                servicioA_Singleton = servicio.ObtenerSingleton()
-            });
         }
 
         [HttpGet] //Accion
-        [HttpGet("listado")] // 'api/autores/listado' o 'api/autores'
-        [HttpGet("/listado")] // 'listado' - sobrescribe la base del endpoint
         //[Authorize] // Protege este endpoint
-        [ServiceFilter(typeof(MiFiltroDeAccion))]
         public async Task<ActionResult<List<Autor>>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
-            throw new System.NotImplementedException();
-            logger.LogInformation("Estamos obteniendo los autores");
-            return await context.Autores.Include(x => x.Libros).ToListAsync();
+            return await context.Autores.ToListAsync();
         }
 
-        [HttpGet("GetFirstRecord")] // api/autores/GetFirstRecord?nombre=Juan
-        public async Task<ActionResult<Autor>> PrimerAutor([FromHeader] int miValor, [FromQuery] string nombre)
-        {
-            return await context.Autores.FirstOrDefaultAsync();
-        }
-
-        [HttpGet("{id:int}/{param2?}")] // api/autores/1 --- '?' el signo de interrogacion indica que el opcional 'param2' --- param2=persona indica un valor por defecto
+        [HttpGet("{id:int}")] // api/autores/1 --- '?' el signo de interrogacion indica que el opcional 'param2' --- param2=persona indica un valor por defecto
         public async Task<ActionResult<Autor>> Get(int id)
         {
             var autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text.Json.Serialization;
 using WebApiAutores.Middlewares;
-using WebApiAutores.Servicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebApiAutores.Filtros;
 
@@ -36,16 +35,6 @@ namespace WebApiAutores
                 options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
             );
 
-            // Si una clase requiere un IServicio pasale el ServicioA
-            services.AddTransient<IServicio, ServicioA>();
-
-            services.AddTransient<ServicioTransient>(); // Se usa si en que en la clase se especifica que requiere este tipo
-            services.AddScoped<ServicioScoped>(); // Se tendran distintas instancias del mismo servicio
-            services.AddSingleton<ServicioSingleton>(); // Se comparte la misma instancia para todas las peticiones
-            services.AddTransient<MiFiltroDeAccion>();
-            services.AddHostedService<EscribirEnArchivo>();
-
-            services.AddResponseCaching();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -60,13 +49,6 @@ namespace WebApiAutores
             app.UseLoguearRespuestaHTTP();
 
 
-            app.Map("/ruta1", app =>
-            {
-                app.Run(async contexto => { 
-                    await contexto.Response.WriteAsync("Estoy interceptando la tuberia");
-                });
-            });
-
             if (env.IsDevelopment())
             {
                 // Los que tienen al inicio la palabra 'Use' son los middlewares
@@ -76,11 +58,7 @@ namespace WebApiAutores
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
-            app.UseResponseCaching();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
