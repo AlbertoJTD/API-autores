@@ -26,7 +26,14 @@ namespace WebApiAutores.Controllers
         public async Task<ActionResult<LibroDTO>> Get(int id)
         {
             // el query incluye los comentarios del libro ~ se ejecuta JOIN
-            var libro = await context.Libros.Include(libroBD => libroBD.Comentarios).FirstOrDefaultAsync(x => x.Id == id);
+            //var libro = await context.Libros.Include(libroBD => libroBD.Comentarios).FirstOrDefaultAsync(x => x.Id == id);
+            var libro = await context.Libros.
+                Include(libroBD => libroBD.AutoresLibros)
+                .ThenInclude(autorLibroDB => autorLibroDB.Autor)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            libro.AutoresLibros = libro.AutoresLibros.OrderBy(x => x.Orden).ToList(); // ordenar autores usando el campo 'Orden'
+
             return mapper.Map<LibroDTO>(libro);
         }
 
