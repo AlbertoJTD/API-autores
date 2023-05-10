@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using WebApiAutores.DTOs;
 using WebApiAutores.Entidades; // Tener acceso a la clase autor
@@ -27,33 +28,34 @@ namespace WebApiAutores.Controllers
 
         [HttpGet] //Accion
         //[Authorize] // Protege este endpoint
-        public async Task<ActionResult<List<Autor>>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
+        public async Task<List<AutorDTO>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
-            return await context.Autores.ToListAsync();
+            var autores = await context.Autores.ToListAsync();
+            return mapper.Map<List<AutorDTO>>(autores);
         }
 
         [HttpGet("{id:int}")] // api/autores/1 --- '?' el signo de interrogacion indica que el opcional 'param2' --- param2=persona indica un valor por defecto
-        public async Task<ActionResult<Autor>> Get(int id)
+        public async Task<ActionResult<AutorDTO>> Get(int id)
         {
-            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
+            var autor = await context.Autores.FirstOrDefaultAsync(autorBD => autorBD.Id == id);
             if (autor == null)
             {
                 return NotFound();
             }
 
-            return autor;
+            return mapper.Map<AutorDTO>(autor);
         }
 
         [HttpGet("{nombre}")] // api/autores/juan
-        public async Task<ActionResult<Autor>> Get(string nombre)
+        public async Task<ActionResult<List<AutorDTO>>> Get(string nombre)
         {
-            var autor = await context.Autores.FirstOrDefaultAsync(x => x.Nombre.Contains(nombre));
+            var autor = await context.Autores.Where(x => x.Nombre.Contains(nombre)).ToListAsync();
             if (autor == null)
             {
                 return NotFound();
             }
 
-            return autor;
+            return mapper.Map<List<AutorDTO>>(autor);
         }
 
         [HttpPost]
