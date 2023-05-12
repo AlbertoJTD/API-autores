@@ -12,6 +12,9 @@ using WebApiAutores.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebApiAutores.Filtros;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System;
 
 namespace WebApiAutores
 {
@@ -34,7 +37,15 @@ namespace WebApiAutores
                 options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
             );
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+                                       AddJwtBearer(opciones =>
+                                            opciones.TokenValidationParameters = new TokenValidationParameters {
+                                                ValidateIssuer = false,
+                                                ValidateAudience = false,
+                                                ValidateLifetime = true,
+                                                ValidateIssuerSigningKey = true,
+                                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["llavejwt"])),
+                                                ClockSkew = TimeSpan.Zero });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
