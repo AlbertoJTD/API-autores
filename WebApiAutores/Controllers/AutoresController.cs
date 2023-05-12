@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,7 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet] //Accion
-        //[Authorize] // Protege este endpoint
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Protege este endpoint
         public async Task<List<AutorDTO>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
             var autores = await context.Autores.ToListAsync();

@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using WebApiAutores.Entidades;
 
 namespace WebApiAutores
 {
-    public class ApplicationDbContext : DbContext // Herada de DbContext
+    public class ApplicationDbContext : IdentityDbContext // Herada de DbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
