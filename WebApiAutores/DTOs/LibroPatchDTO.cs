@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System;
 using WebApiAutores.Validaciones;
 
 namespace WebApiAutores.DTOs
 {
-    public class LibroCreacionDTO
+    public class LibroPatchDTO
     {
         [PrimeraLetraMayuscula]
         [StringLength(maximumLength: 250)]
