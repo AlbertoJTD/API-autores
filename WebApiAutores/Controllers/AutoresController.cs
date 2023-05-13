@@ -16,7 +16,7 @@ namespace WebApiAutores.Controllers
 {
     [ApiController]
     [Route("api/autores")] // Este es el ENDPOINT
-    // [Authorize] // Protege todos los endpoint
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Protege todos los endpoint
     public class AutoresController: ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -38,7 +38,7 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet] //Accion
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Protege este endpoint
+        [AllowAnonymous] // Permitir peticiones anonimas
         public async Task<List<AutorDTO>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
             var autores = await context.Autores.ToListAsync();
