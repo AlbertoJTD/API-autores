@@ -16,7 +16,7 @@ namespace WebApiAutores.Controllers
 {
     [ApiController]
     [Route("api/autores")] // Este es el ENDPOINT
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Protege todos los endpoint
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")] // Protege todos los endpoint
     public class AutoresController: ControllerBase
     {
         private readonly ApplicationDbContext context;
