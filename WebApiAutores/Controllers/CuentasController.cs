@@ -38,7 +38,7 @@ namespace WebApiAutores.Controllers
 
             if (resultado.Succeeded)
             {
-                return ConstruirToken(credencialesUsuario);
+                return await ConstruirToken(credencialesUsuario);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace WebApiAutores.Controllers
 
             if (resultado.Succeeded)
             {
-                return ConstruirToken(credencialesUsuario);
+                return await ConstruirToken(credencialesUsuario);
             }
             else
             {
@@ -65,7 +65,7 @@ namespace WebApiAutores.Controllers
 
         [HttpGet("RenovarToken")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public ActionResult<RespuestaAutenticacion> Renovar()
+        public async Task<ActionResult<RespuestaAutenticacion>> Renovar()
         {
             var email = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault().Value;
             var credencialesUsuario = new CredencialesUsuario()
@@ -73,17 +73,22 @@ namespace WebApiAutores.Controllers
                 Email = email
             };
 
-            return ConstruirToken(credencialesUsuario);
+            return await ConstruirToken(credencialesUsuario);
         }
 
 
-        private RespuestaAutenticacion ConstruirToken(CredencialesUsuario credencialesUsuario)
+        private async Task<RespuestaAutenticacion> ConstruirToken(CredencialesUsuario credencialesUsuario)
         {
             var claims = new List<Claim>()
             {
                 // key - value pairs
                 new Claim("email", credencialesUsuario.Email)
             };
+
+            var usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
+            var claimsDB = await userManager.GetClaimsAsync(usuario);
+
+            claims.AddRange(claimsDB);
 
             var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]));
             var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
@@ -99,5 +104,23 @@ namespace WebApiAutores.Controllers
             };
         }
 
+
+        [HttpPost("HacerAdmin")]
+        public async Task<ActionResult> HacerAdmin(EditarAdminDTO editarAdminDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+            await userManager.AddClaimAsync(usuario, new Claim("esAdmin", "1"));
+
+            return NoContent();
+        }
+
+        [HttpPost("RemoverAdmin")]
+        public async Task<ActionResult> RemoverAdmin(EditarAdminDTO editarAdminDTO)
+        {
+            var usuario = await userManager.FindByEmailAsync(editarAdminDTO.Email);
+            await userManager.RemoveClaimAsync(usuario, new Claim("esAdmin", "1"));
+
+            return NoContent();
+        }
     }
 }
