@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
+using WebApiAutores.Servicios;
 
 namespace WebApiAutores
 {
@@ -88,7 +89,7 @@ namespace WebApiAutores
             });
 
             services.AddDataProtection();
-            //services.AddTransient<HashService>();
+            services.AddTransient<HashService>();
 
             services.AddCors(opciones =>
             {
