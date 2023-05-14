@@ -87,7 +87,7 @@ namespace WebApiAutores
                 opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
             });
 
-            //services.AddDataProtection();
+            services.AddDataProtection();
             //services.AddTransient<HashService>();
 
             services.AddCors(opciones =>
