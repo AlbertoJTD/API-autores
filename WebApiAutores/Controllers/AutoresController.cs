@@ -34,7 +34,7 @@ namespace WebApiAutores.Controllers
         [HttpGet(Name = "obtenerAutores")] //Accion
         [AllowAnonymous] // Permitir peticiones anonimas
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
-        public async Task<ActionResult<List<AutorDTO>>> Get([FromHeader] string incluirHATEOAS) // Retorna un listado de 2 autores cuando se haga una peticion GET
+        public async Task<ActionResult<List<AutorDTO>>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
             var autores = await context.Autores.ToListAsync();
             return mapper.Map<List<AutorDTO>>(autores);
@@ -43,7 +43,7 @@ namespace WebApiAutores.Controllers
         [HttpGet("{id:int}", Name = "obtenerAutor")] // api/autores/1 --- '?' el signo de interrogacion indica que el opcional 'param2' --- param2=persona indica un valor por defecto
         [AllowAnonymous]
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
-        public async Task<ActionResult<AutorDTOConLibros>> Get(int id, [FromHeader] string incluirHATEOAS)
+        public async Task<ActionResult<AutorDTOConLibros>> Get(int id)
         {
             var autor = await context.Autores.
                 Include(autorDB => autorDB.AutoresLibros)
