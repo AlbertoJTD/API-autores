@@ -19,6 +19,8 @@ using System.Reflection;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using WebApiAutores.Servicios;
+using WebApiAutores.Utilidades;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace WebApiAutores
 {
@@ -98,6 +100,10 @@ namespace WebApiAutores
                     builder.WithOrigins("https://apirequest.io").AllowAnyMethod().AllowAnyHeader();
                 });
             });
+
+            services.AddTransient<GeneradorEnlaces>();
+            services.AddTransient<HATEOASAutorFilterAttribute>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
