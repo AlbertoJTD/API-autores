@@ -36,9 +36,11 @@ namespace WebApiAutores.Controllers.V1
         [HttpGet(Name = "obtenerAutoresv1")] //Accion
         [AllowAnonymous] // Permitir peticiones anonimas
         [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
-        public async Task<ActionResult<List<AutorDTO>>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
+        public async Task<ActionResult<List<AutorDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO) // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
-            var autores = await context.Autores.ToListAsync();
+            var queryable = context.Autores.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEnCabecera(queryable);
+            var autores = await queryable.OrderBy(autor => autor.Nombre).Paginar(paginacionDTO).ToListAsync();
             return mapper.Map<List<AutorDTO>>(autores);
         }
 
