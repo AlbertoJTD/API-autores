@@ -21,7 +21,9 @@ using System.IdentityModel.Tokens.Jwt;
 using WebApiAutores.Servicios;
 using WebApiAutores.Utilidades;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace WebApiAutores
 {
     public class Startup
@@ -58,7 +60,14 @@ namespace WebApiAutores
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIAutores", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "WebAPIAutores",
+                    Version = "v1",
+                    Description = "Esta es una API para trabajar con autores y libros",
+                    Contact = new OpenApiContact { Email = "usuario@mail.com", Name = "Alberto", Url = new Uri("https://miBlog.com") },
+                    License = new OpenApiLicense { Name = "MIT"}
+                });
                 c.SwaggerDoc("v2", new OpenApiInfo { Title = "WebAPIAutores", Version = "v2" });
 
                 c.OperationFilter<AgregarParametrosHATEOAS>();
@@ -86,6 +95,10 @@ namespace WebApiAutores
                         new string[]{}
                     }
                 });
+
+                var archivoXML = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var rutaXML = Path.Combine(AppContext.BaseDirectory, archivoXML);
+                c.IncludeXmlComments(rutaXML);
             }); 
 
             services.AddAutoMapper(typeof(Startup));

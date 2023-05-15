@@ -98,3 +98,5 @@ C:\Users\alber\source\repos\WebApiAutores\WebApiAutores\bin\Debug\net6.0\Microso
 C:\Users\alber\source\repos\WebApiAutores\WebApiAutores\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\alber\source\repos\WebApiAutores\WebApiAutores\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\alber\source\repos\WebApiAutores\WebApiAutores\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\alber\source\repos\WebApiAutores\WebApiAutores\bin\Debug\net6.0\WebApiAutores.xml
+C:\Users\alber\source\repos\WebApiAutores\WebApiAutores\obj\Debug\net6.0\WebApiAutores.xml
