@@ -11,11 +11,11 @@ using WebApiAutores.DTOs;
 using WebApiAutores.Entidades;
 using WebApiAutores.Migrations;
 
-namespace WebApiAutores.Controllers
+namespace WebApiAutores.Controllers.V1
 {
     [ApiController]
-    [Route("api/libros/{libroId:int}/comentarios")]
-    public class ComentariosController: ControllerBase
+    [Route("api/v1/libros/{libroId:int}/comentarios")]
+    public class ComentariosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
@@ -58,7 +58,7 @@ namespace WebApiAutores.Controllers
             var usuarioId = usuario.Id;
 
             var existeLibro = await context.Libros.AnyAsync(libroDB => libroDB.Id == libroId);
-            
+
             if (!existeLibro)
             {
                 return NotFound();
@@ -72,7 +72,7 @@ namespace WebApiAutores.Controllers
             await context.SaveChangesAsync();
 
             var comentarioDTO = mapper.Map<ComentarioDTO>(comentario);
-            return CreatedAtRoute("obtenerComentario", new { id = comentario.Id, libroId = libroId }, comentarioDTO);
+            return CreatedAtRoute("obtenerComentario", new { id = comentario.Id, libroId }, comentarioDTO);
 
         }
 

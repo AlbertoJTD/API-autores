@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApiAutores.DTOs;
 
-namespace WebApiAutores.Controllers
+namespace WebApiAutores.Controllers.V1
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/v1")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class RootController: ControllerBase
+    public class RootController : ControllerBase
     {
         private readonly IAuthorizationService authorizationService;
 
@@ -27,7 +27,7 @@ namespace WebApiAutores.Controllers
             var datosHATEOAS = new List<DatoHATEOAS>();
             var esAdmin = await authorizationService.AuthorizeAsync(User, "esAdmin");
 
-            datosHATEOAS.Add(new DatoHATEOAS(enlace: Url.Link("ObtenerRoot", new {}), descripcion: "self", metodo: "GET"));
+            datosHATEOAS.Add(new DatoHATEOAS(enlace: Url.Link("ObtenerRoot", new { }), descripcion: "self", metodo: "GET"));
 
             // ENDPOINT Autor
             datosHATEOAS.Add(new DatoHATEOAS(enlace: Url.Link("obtenerAutores", new { }), descripcion: "autores", metodo: "GET"));

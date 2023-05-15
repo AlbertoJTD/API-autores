@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 using WebApiAutores.DTOs;
 using WebApiAutores.Servicios;
 
-namespace WebApiAutores.Controllers
+namespace WebApiAutores.Controllers.V1
 {
     [ApiController]
-    [Route("api/cuentas")]
-    public class CuentasController: ControllerBase
+    [Route("api/v1/cuentas")]
+    public class CuentasController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
@@ -105,7 +105,8 @@ namespace WebApiAutores.Controllers
             var securityToken = new JwtSecurityToken(issuer: null, audience: null,
                                                     claims: claims, expires: expiracion, signingCredentials: creds);
 
-            return new RespuestaAutenticacion() { 
+            return new RespuestaAutenticacion()
+            {
                 Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
                 Expiracion = expiracion,
             };

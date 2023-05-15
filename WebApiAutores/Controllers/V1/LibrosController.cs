@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using WebApiAutores.DTOs;
 using WebApiAutores.Entidades;
 
-namespace WebApiAutores.Controllers
+namespace WebApiAutores.Controllers.V1
 {
     [ApiController]
-    [Route("api/libros")] // Endpoint
-    public class LibrosController: ControllerBase
+    [Route("api/v1/libros")] // Endpoint
+    public class LibrosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
@@ -47,7 +47,7 @@ namespace WebApiAutores.Controllers
         [HttpPost(Name = "crearLibro")]
         public async Task<ActionResult> Post(LibroCreacionDTO libroCreacionDTO)
         {
-            if  (libroCreacionDTO.AutoresIds == null)
+            if (libroCreacionDTO.AutoresIds == null)
             {
                 return BadRequest("No se puede crear un libro sin autores");
             }
