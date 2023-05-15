@@ -16,7 +16,9 @@ using WebApiAutores.Utilidades;
 namespace WebApiAutores.Controllers.V1
 {
     [ApiController]
-    [Route("api/v1/autores")] // Este es el ENDPOINT
+    [Route("api/autores")] // Este es el ENDPOINT
+    [CabeceraEstaPresente("x-version", "1")]
+    //[Route("api/v1/autores")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsAdmin")] // Protege todos los endpoint
     public class AutoresController : ControllerBase
     {
