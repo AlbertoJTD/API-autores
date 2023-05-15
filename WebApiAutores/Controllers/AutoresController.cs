@@ -37,7 +37,7 @@ namespace WebApiAutores.Controllers
             return configuration["apellido"];
         }
 
-        [HttpGet] //Accion
+        [HttpGet(Name = "obtenerAutores")] //Accion
         [AllowAnonymous] // Permitir peticiones anonimas
         public async Task<List<AutorDTO>> Get() // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
@@ -60,7 +60,7 @@ namespace WebApiAutores.Controllers
             return mapper.Map<AutorDTOConLibros>(autor);
         }
 
-        [HttpGet("{nombre}")] // api/autores/juan
+        [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")] // api/autores/juan
         public async Task<ActionResult<List<AutorDTO>>> Get(string nombre)
         {
             var autor = await context.Autores.Where(x => x.Nombre.Contains(nombre)).ToListAsync();
@@ -72,7 +72,7 @@ namespace WebApiAutores.Controllers
             return mapper.Map<List<AutorDTO>>(autor);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "crearAutor")]
         public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreacionDTO)
         {
             var existeAutor = await context.Autores.AnyAsync(x => x.Nombre == autorCreacionDTO.Nombre);
@@ -91,7 +91,7 @@ namespace WebApiAutores.Controllers
             return CreatedAtRoute("obtenerAutor", new { id = autor.Id}, autorDTO);
         }
 
-        [HttpPut("{id:int}")] // Se combina la ruta del ENDPOINT + lo que se coloca aqui => api/autores/1
+        [HttpPut("{id:int}", Name = "actualizarAutor")] // Se combina la ruta del ENDPOINT + lo que se coloca aqui => api/autores/1
         public async Task<ActionResult> Put(AutorCreacionDTO autorCreacionDTO, int id)
         {
             var existe = await context.Autores.AnyAsync(x => x.Id == id);
@@ -109,7 +109,7 @@ namespace WebApiAutores.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}", Name = "eliminarAutor")]
         public async Task<ActionResult> Delete(Autor autor, int id)
         {
             var existe = await context.Autores.AnyAsync(x => x.Id == id);
