@@ -33,29 +33,11 @@ namespace WebApiAutores.Controllers
 
         [HttpGet(Name = "obtenerAutores")] //Accion
         [AllowAnonymous] // Permitir peticiones anonimas
-        public async Task<IActionResult> Get([FromQuery] bool incluirHATEOAS = true) // Retorna un listado de 2 autores cuando se haga una peticion GET
+        [ServiceFilter(typeof(HATEOASAutorFilterAttribute))]
+        public async Task<ActionResult<List<AutorDTO>>> Get([FromHeader] string incluirHATEOAS) // Retorna un listado de 2 autores cuando se haga una peticion GET
         {
             var autores = await context.Autores.ToListAsync();
-            var dtos = mapper.Map<List<AutorDTO>>(autores);
-            
-            if (incluirHATEOAS)
-            {
-                var esAdmin = await authorizationService.AuthorizeAsync(User, "esAdmin");
-                //dtos.ForEach(dto => GenerarEnlaces(dto, esAdmin.Succeeded));
-
-                var resultado = new ColeccionDeRecursos<AutorDTO>() { Valores = dtos};
-                resultado.Enlaces.Add(new DatoHATEOAS(enlace: Url.Link("obtenerAutores", new { }), descripcion: "self", metodo: "GET"));
-
-                if (esAdmin.Succeeded)
-                {
-                    resultado.Enlaces.Add(new DatoHATEOAS(enlace: Url.Link("crearAutor", new { }), descripcion: "crear-autor", metodo: "POST"));
-                }
-
-                return Ok(resultado);
-            }
-
-            
-            return Ok(dtos);
+            return mapper.Map<List<AutorDTO>>(autores);
         }
 
         [HttpGet("{id:int}", Name = "obtenerAutor")] // api/autores/1 --- '?' el signo de interrogacion indica que el opcional 'param2' --- param2=persona indica un valor por defecto
@@ -78,7 +60,7 @@ namespace WebApiAutores.Controllers
         }
 
         [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")] // api/autores/juan
-        public async Task<ActionResult<List<AutorDTO>>> Get(string nombre)
+        public async Task<ActionResult<List<AutorDTO>>> GetPorNombre(string nombre)
         {
             var autor = await context.Autores.Where(x => x.Nombre.Contains(nombre)).ToListAsync();
             if (autor == null)

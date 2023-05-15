@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApiAutores.DTOs;
 using WebApiAutores.Servicios;
@@ -27,9 +28,18 @@ namespace WebApiAutores.Utilidades
             }
 
             var resultado = context.Result as ObjectResult;
-            var modelo = resultado.Value as AutorDTO ?? throw new ArgumentNullException("Se esperaba una instancia de AutorDTO");
+            var autorDTO = resultado.Value as AutorDTO;
 
-            await generadorEnlaces.GenerarEnlaces(modelo);
+            if (autorDTO == null)
+            {
+                var autoresDTO = resultado.Value as List<AutorDTO> ?? throw new ArgumentException("Se esperaba una instancia de AutorDTO o List<AutorDTO>");
+                autoresDTO.ForEach(async autor => await generadorEnlaces.GenerarEnlaces(autor));
+                resultado.Value = autoresDTO;
+            }
+            else
+            {
+                await generadorEnlaces.GenerarEnlaces(autorDTO);
+            }
 
             await next();
         }
