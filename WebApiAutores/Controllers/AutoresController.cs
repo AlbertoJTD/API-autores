@@ -52,12 +52,36 @@ namespace WebApiAutores.Controllers
                 Include(autorDB => autorDB.AutoresLibros)
                 .ThenInclude(autorLibroDB => autorLibroDB.Libro) // Acceder a los datos de los libros
                 .FirstOrDefaultAsync(autorBD => autorBD.Id == id);
+            
             if (autor == null)
             {
                 return NotFound();
             }
 
-            return mapper.Map<AutorDTOConLibros>(autor);
+            var dto =  mapper.Map<AutorDTOConLibros>(autor);
+            GenerarEnlaces(dto);
+            return dto;
+        }
+
+        private void GenerarEnlaces(AutorDTO autorDTO)
+        {
+            autorDTO.Enlaces.Add(new DatoHATEOAS(
+                enlace: Url.Link("obtenerAutor", new {id = autorDTO.Id}),
+                descripcion: "self",
+                metodo: "GET"
+            ));
+
+            autorDTO.Enlaces.Add(new DatoHATEOAS(
+                enlace: Url.Link("actualizarAutor", new { id = autorDTO.Id }),
+                descripcion: "autor-actualizar",
+                metodo: "PUT"
+            ));
+
+            autorDTO.Enlaces.Add(new DatoHATEOAS(
+                enlace: Url.Link("eliminarAutor", new { id = autorDTO.Id }),
+                descripcion: "self",
+                metodo: "DELETE"
+            ));
         }
 
         [HttpGet("{nombre}", Name = "obtenerAutorPorNombre")] // api/autores/juan
