@@ -9,7 +9,7 @@
         public int RecordsPorPagina
         {
             get { return  recordsPorPagina; }
-            
+
             set { recordsPorPagina = (value > CantidadMaximaPorPagina) ? CantidadMaximaPorPagina : value; }
         }
     }

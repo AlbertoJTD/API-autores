@@ -10,7 +10,7 @@ namespace WebApiAutores.Validaciones
             {
                 return ValidationResult.Success;
             }
-            
+
             var primeraLetra = value.ToString()[0].ToString();
 
             if (primeraLetra != primeraLetra.ToUpper())
