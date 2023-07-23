@@ -20,5 +20,35 @@ namespace WebAPIAutores.Test.PruebasUnitarias
             // Ejecucion
             Assert.AreEqual("La primera letra debe ser mayuscula", result.ErrorMessage);
 		}
-    }
+
+		[TestMethod] // Decorador
+		public void NullValue_ReturnsSuccess()
+		{
+			// Preparacion
+			var primeraLetraMayuscula = new PrimeraLetraMayusculaAttribute();
+			string valor = null;
+			var valContext = new ValidationContext(new { Nombre = valor });
+
+			// Verificacion
+			var result = primeraLetraMayuscula.GetValidationResult(valor, valContext);
+
+			// Ejecucion
+			Assert.IsNull(result);
+		}
+
+		[TestMethod] // Decorador
+		public void FirstCapitalLetter_DoesNotReturnError()
+		{
+			// Preparacion
+			var primeraLetraMayuscula = new PrimeraLetraMayusculaAttribute();
+			var valor = "John";
+			var valContext = new ValidationContext(new { Nombre = valor });
+
+			// Verificacion
+			var result = primeraLetraMayuscula.GetValidationResult(valor, valContext);
+
+			// Ejecucion
+			Assert.IsNull(result);
+		}
+	}
 }
