@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApiAutores.DTOs;
+using WebApiAutores.Entidades;
 using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers.V1
@@ -25,13 +26,15 @@ namespace WebApiAutores.Controllers.V1
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
         private readonly SignInManager<IdentityUser> signInManager;
+		private readonly ServicioLlaves servicioLlaves;
 
-        public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager)
+		public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager, ServicioLlaves servicioLlaves)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
-        }
+			this.servicioLlaves = servicioLlaves;
+		}
 
         [HttpPost("registrar", Name = "registrarUsuario")] // api/cuentas/registrar
         public async Task<ActionResult<RespuestaAutenticacion>> Registrar(CredencialesUsuario credencialesUsuario)
@@ -41,6 +44,7 @@ namespace WebApiAutores.Controllers.V1
 
             if (resultado.Succeeded)
             {
+                await servicioLlaves.CrearLLave(usuario.Id, TipoLlave.Gratuita);
                 return await ConstruirToken(credencialesUsuario, usuario.Id);
             }
             else
