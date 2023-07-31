@@ -25,16 +25,12 @@ namespace WebApiAutores.Controllers.V1
         private readonly UserManager<IdentityUser> userManager;
         private readonly IConfiguration configuration;
         private readonly SignInManager<IdentityUser> signInManager;
-        private readonly HashService hashService;
-        private readonly IDataProtector dataProtector;
 
-        public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager, IDataProtectionProvider dataProtectionProvider, HashService hashService)
+        public CuentasController(UserManager<IdentityUser> userManager, IConfiguration configuration, SignInManager<IdentityUser> signInManager)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
-            this.hashService = hashService;
-            dataProtector = dataProtectionProvider.CreateProtector("valor_unico_y_quiza_secreto");
         }
 
         [HttpPost("registrar", Name = "registrarUsuario")] // api/cuentas/registrar
@@ -45,7 +41,7 @@ namespace WebApiAutores.Controllers.V1
 
             if (resultado.Succeeded)
             {
-                return await ConstruirToken(credencialesUsuario);
+                return await ConstruirToken(credencialesUsuario, usuario.Id);
             }
             else
             {
@@ -62,7 +58,8 @@ namespace WebApiAutores.Controllers.V1
 
             if (resultado.Succeeded)
             {
-                return await ConstruirToken(credencialesUsuario);
+                var usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
+                return await ConstruirToken(credencialesUsuario, usuario.Id);
             }
             else
             {
@@ -75,22 +72,26 @@ namespace WebApiAutores.Controllers.V1
         public async Task<ActionResult<RespuestaAutenticacion>> Renovar()
         {
             var email = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault().Value;
+            var idClaim = HttpContext.User.Claims.Where(claim => claim.Type == "id").FirstOrDefault();
+            var usuarioId = idClaim.Value;
+
             var credencialesUsuario = new CredencialesUsuario()
             {
                 Email = email
             };
 
-            return await ConstruirToken(credencialesUsuario);
+            return await ConstruirToken(credencialesUsuario, usuarioId);
         }
 
 
-        private async Task<RespuestaAutenticacion> ConstruirToken(CredencialesUsuario credencialesUsuario)
+        private async Task<RespuestaAutenticacion> ConstruirToken(CredencialesUsuario credencialesUsuario, string usuarioId)
         {
             var claims = new List<Claim>()
             {
                 // key - value pairs
-                new Claim("email", credencialesUsuario.Email)
-            };
+                new Claim("email", credencialesUsuario.Email),
+				new Claim("id", usuarioId),
+			};
 
             var usuario = await userManager.FindByEmailAsync(credencialesUsuario.Email);
             var claimsDB = await userManager.GetClaimsAsync(usuario);

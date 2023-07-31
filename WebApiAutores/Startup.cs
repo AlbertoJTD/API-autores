@@ -41,7 +41,7 @@ namespace WebApiAutores
             services.AddControllers(opciones => {
                 opciones.Filters.Add(typeof(FiltroDeExcepcion));
                 opciones.Conventions.Add(new SwaggerAgrupaPorVersion());
-            }).AddJsonOptions(x => 
+            }).AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles).AddNewtonsoftJson();
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
@@ -99,7 +99,7 @@ namespace WebApiAutores
                 var archivoXML = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var rutaXML = Path.Combine(AppContext.BaseDirectory, archivoXML);
                 c.IncludeXmlComments(rutaXML);
-            }); 
+            });
 
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -116,8 +116,7 @@ namespace WebApiAutores
             {
                 opciones.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("https://apirequest.io").AllowAnyMethod().AllowAnyHeader().WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
-
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
                 });
             });
 
