@@ -21,6 +21,8 @@ namespace WebApiAutores.Utilidades
 
             CreateMap<ComentarioCreacionDTO, Comentario>();
             CreateMap<Comentario, ComentarioDTO>();
+
+            CreateMap<LlaveAPI, LlaveDTO>();
         }
 
         private List<LibroDTO> MapAutorDTOLibros(Autor autor, AutorDTO autorDTO)
@@ -49,7 +51,7 @@ namespace WebApiAutores.Utilidades
 
             foreach (var autorLibro in libro.AutoresLibros)
             {
-                resultado.Add(new AutorDTO() { 
+                resultado.Add(new AutorDTO() {
                     Id = autorLibro.AutorId,
                     Nombre = autorLibro.Autor.Nombre
                 });
