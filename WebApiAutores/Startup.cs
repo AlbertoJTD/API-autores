@@ -123,6 +123,8 @@ namespace WebApiAutores
             services.AddTransient<GeneradorEnlaces>();
             services.AddTransient<HATEOASAutorFilterAttribute>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddScoped<ServicioLlaves>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
