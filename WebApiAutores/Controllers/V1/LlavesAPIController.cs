@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApiAutores.DTOs;
+using WebApiAutores.Entidades;
 using WebApiAutores.Servicios;
 
 namespace WebApiAutores.Controllers.V1
@@ -32,5 +33,25 @@ namespace WebApiAutores.Controllers.V1
 
 			return mapper.Map<List<LlaveDTO>>(llaves);
 		}
-    }
+
+		[HttpPost]
+		public async Task<ActionResult> CrearLlave(CrearLlaveDTO crearLlaveDTO)
+		{
+			var usuarioId = ObtenerUsuarioId();
+
+			if (crearLlaveDTO.TipoLlave == TipoLlave.Gratuita)
+			{
+				var existeLlaveGratuita = await context.LlavesAPI.AnyAsync(x => x.UsuarioId == usuarioId && x.TipoLlave == TipoLlave.Gratuita);
+
+				if (existeLlaveGratuita)
+				{
+					return BadRequest("El usuario ya cuenta con una llave gratuita");
+				}
+			}
+
+			await servicioLlaves.CrearLLave(usuarioId, crearLlaveDTO.TipoLlave);
+
+			return NoContent();
+		}
+	}
 }
