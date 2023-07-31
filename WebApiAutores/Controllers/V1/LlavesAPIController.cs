@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,7 +13,8 @@ using WebApiAutores.Servicios;
 namespace WebApiAutores.Controllers.V1
 {
 	[ApiController]
-	[Route("api/llavesAPI")]
+	[Route("api/v1/llavesAPI")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 	public class LlavesAPIController: CustomBaseController
 	{
 		private readonly ApplicationDbContext context;
