@@ -126,6 +126,7 @@ namespace WebApiAutores
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddScoped<ServicioLlaves>();
+            services.AddHostedService<FacturasHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
