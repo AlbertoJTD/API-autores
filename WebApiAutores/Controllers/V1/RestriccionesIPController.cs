@@ -46,5 +46,26 @@ namespace WebApiAutores.Controllers.V1
 
 			return NoContent();
 		}
+
+		[HttpPut("{id:int}")]
+		public async Task<ActionResult> Put(int id, ActualizarRestriccionIPDTO actualizarRestriccion)
+		{
+			var restriccionDB = await context.RestriccionesIP.Include(x => x.Llave).FirstOrDefaultAsync(x => x.Id == id);
+			if (restriccionDB == null)
+			{
+				return NotFound();
+			}
+
+			var usuarioId = ObtenerUsuarioId();
+			if (restriccionDB.Llave.UsuarioId != usuarioId)
+			{
+				return Forbid();
+			}
+
+			restriccionDB.IP = actualizarRestriccion.IP;
+			await context.SaveChangesAsync();
+
+			return NoContent();
+		}
 	}
 }
