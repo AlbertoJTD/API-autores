@@ -46,5 +46,26 @@ namespace WebApiAutores.Controllers
 			await context.SaveChangesAsync();
 			return NoContent();
 		}
+
+		[HttpPut("{id:int}")]
+		public async Task<ActionResult> Put(int id, ActualizarRestriccionDominioDTO actualizarRestriccionDominio)
+		{
+			var restriccionDB = await context.RestriccionesDominio.Include(x => x.Llave).FirstOrDefaultAsync(x => x.Id == id);
+			if (restriccionDB == null)
+			{
+				return NotFound();
+			}
+
+			var usuarioId = ObtenerUsuarioId();
+			if (restriccionDB.Llave.UsuarioId != usuarioId)
+			{
+				return Forbid();
+			}
+
+			restriccionDB.Dominio = actualizarRestriccionDominio.Dominio;
+
+			await context.SaveChangesAsync();
+			return NoContent();
+		}
 	}
 }
