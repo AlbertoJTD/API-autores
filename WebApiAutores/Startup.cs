@@ -151,6 +151,7 @@ namespace WebApiAutores
             app.UseRouting();
 
             app.UseCors();
+            app.UseLimitarPeticiones();
 
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
