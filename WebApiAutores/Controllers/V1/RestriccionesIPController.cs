@@ -1,0 +1,50 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using WebApiAutores.DTOs;
+using WebApiAutores.Entidades;
+
+namespace WebApiAutores.Controllers.V1
+{
+	[ApiController]
+	[Route("api/v1/restriccionesip")]
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+	public class RestriccionesIPController: CustomBaseController
+	{
+		private readonly ApplicationDbContext context;
+
+		public RestriccionesIPController(ApplicationDbContext context)
+        {
+			this.context = context;
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> Post(CrearRestriccionIPDTO crearRestriccion)
+		{
+			var llaveDB = await context.LlavesAPI.FirstOrDefaultAsync(x => x.Id == crearRestriccion.LlaveId);
+			if (llaveDB == null)
+			{
+				return NotFound();
+			}
+
+			var usuarioId = ObtenerUsuarioId();
+			if (llaveDB.UsuarioId != usuarioId)
+			{
+				return Forbid();
+			}
+
+			var restriccionIP = new RestriccionIP
+			{
+				LlaveId = llaveDB.Id,
+				IP = crearRestriccion.IP
+			};
+
+			context.Add(restriccionIP);
+			await context.SaveChangesAsync();
+
+			return NoContent();
+		}
+	}
+}
