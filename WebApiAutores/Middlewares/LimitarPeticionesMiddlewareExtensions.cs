@@ -68,6 +68,7 @@ public class LimitarPeticionesMiddleware
 		var llave = llaveStringValues[0];
 		var llaveDB = await context.LlavesAPI.Include(x => x.RestriccionesDominio)
 											 .Include(x => x.RestriccionesIP)
+											 .Include(x => x.Usuario)
 											 .FirstOrDefaultAsync(x => x.Llave == llave);
 
 		if (llaveDB == null)
@@ -88,7 +89,7 @@ public class LimitarPeticionesMiddleware
 		{
 			var hoy = DateTime.Today;
 			var manana = hoy.AddDays(1);
-			var cantidadPeticionesRealizadasHoy = await context.Peticiones.CountAsync(x =>  x.LlaveId == llaveDB.Id && x.FechaPeticion >= hoy && x.FechaPeticion < manana);
+			var cantidadPeticionesRealizadasHoy = await context.Peticiones.CountAsync(x => x.LlaveId == llaveDB.Id && x.FechaPeticion >= hoy && x.FechaPeticion < manana);
 
 			if (cantidadPeticionesRealizadasHoy >= limitarPeticionesConfiguracion.PeticionesPorDiaGratuito)
 			{
@@ -96,6 +97,12 @@ public class LimitarPeticionesMiddleware
 				await httpContext.Response.WriteAsync("Ha excedido el numero de peticiones por dia. Actualice su cuenta a Profesional para realizar mas peticiones");
 				return;
 			}
+		}
+		else if(llaveDB.Usuario.Deudor)
+		{
+			httpContext.Response.StatusCode = 400;
+			await httpContext.Response.WriteAsync("El usuario tiene una deuda pendiente");
+			return;
 		}
 
 		var superaRestricciones = PeticionSuperaAlgunaDeLasPeticiones(llaveDB, httpContext);

@@ -22,6 +22,7 @@ using WebApiAutores.Servicios;
 using WebApiAutores.Utilidades;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using WebApiAutores.Entidades;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace WebApiAutores
@@ -102,7 +103,7 @@ namespace WebApiAutores
             });
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<Usuario, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthorization(opciones =>
             {

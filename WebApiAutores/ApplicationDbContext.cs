@@ -5,7 +5,7 @@ using WebApiAutores.Entidades;
 
 namespace WebApiAutores
 {
-    public class ApplicationDbContext : IdentityDbContext // Herada de DbContext
+    public class ApplicationDbContext : IdentityDbContext<Usuario> // Herada de DbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
