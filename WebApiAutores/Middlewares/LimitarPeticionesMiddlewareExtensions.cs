@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebApiAutores;
@@ -35,6 +36,15 @@ public class LimitarPeticionesMiddleware
 	{
 		var limitarPeticionesConfiguracion = new LimitarPeticionesConfiguracion();
 		configuration.GetRequiredSection("limitarPeticiones").Bind(limitarPeticionesConfiguracion);
+
+		var ruta = httpContext.Request.Path.ToString();
+		var rutaListaBlanca = limitarPeticionesConfiguracion.ListaBlancaRutas.Any(x => ruta.Contains(x));
+
+		if (rutaListaBlanca)
+		{
+			await siguiente(httpContext);
+			return;
+		}
 
 		var llaveStringValues = httpContext.Request.Headers["X-Api-Key"];
 
