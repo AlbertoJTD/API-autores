@@ -5,11 +5,13 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebApiAutores;
 using WebApiAutores.DTOs;
 using WebApiAutores.Entidades;
+using WebApiAutores.Migrations;
 
 namespace WebApiAutores.Middlewares
 {
@@ -125,7 +127,9 @@ public class LimitarPeticionesMiddleware
 		}
 
 		var peticionSuperaRestriccionesDominio = PeticionSuperaRestriccionesDominio(llaveAPI.RestriccionesDominio, httpContext);
-		return peticionSuperaRestriccionesDominio;
+		var peticionSuperaLasRestriccionesIP = PeticionSuperaLasRestriciconesIP(llaveAPI.RestriccionesIP, httpContext);
+
+		return peticionSuperaRestriccionesDominio || peticionSuperaLasRestriccionesIP;
 	}
 
 	private bool PeticionSuperaRestriccionesDominio(List<RestriccionDominio> restricciones, HttpContext httpContext)
@@ -146,6 +150,24 @@ public class LimitarPeticionesMiddleware
 		string host = myUri.Host;
 
 		var superaRestriccion = restricciones.Any(x => x.Dominio == host);
+		return superaRestriccion;
+	}
+
+	private bool PeticionSuperaLasRestriciconesIP(List<RestriccionIP> restricciones, HttpContext httpContext)
+	{
+		if (restricciones == null || restricciones.Count == 0)
+		{
+			return false;
+		}
+
+		var IP = httpContext.Connection.RemoteIpAddress.ToString();
+
+		if (IP == string.Empty)
+		{
+			return false;
+		}
+
+		var superaRestriccion = restricciones.Any(x => x.IP == IP);
 		return superaRestriccion;
 	}
 }
