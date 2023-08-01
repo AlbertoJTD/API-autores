@@ -36,16 +36,27 @@ namespace WebApiAutores.Servicios
 			{
 				var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-				var hoy = DateTime.Today;
-				var fechaComparacion = hoy.AddMonths(-1);
-				var facturasDelMesYaFueronEmitidas = context.FacturasEmitidas.Any(x => x.Año == fechaComparacion.Year && x.Mes == fechaComparacion.Month);
+				EstablecerDeudor(context);
+				EmitirFacturas(context);
+			}
+		}
 
-				if (!facturasDelMesYaFueronEmitidas)
-				{
-					var fechaInicio = new DateTime(fechaComparacion.Year, fechaComparacion.Month, 1);
-					var fechaFin = fechaInicio.AddMonths(1);
-					context.Database.ExecuteSqlInterpolated($"exec CreacionFacturas {fechaInicio.ToString("yyyy-MM-dd")}, {fechaFin.ToString("yyyy-MM-dd")}");
-				}
+		private static void EstablecerDeudor(ApplicationDbContext context)
+		{
+			context.Database.ExecuteSqlRaw("exec EstablecerDeudor");
+		}
+
+		private static void EmitirFacturas(ApplicationDbContext context)
+		{
+			var hoy = DateTime.Today;
+			var fechaComparacion = hoy.AddMonths(-1);
+			var facturasDelMesYaFueronEmitidas = context.FacturasEmitidas.Any(x => x.Año == fechaComparacion.Year && x.Mes == fechaComparacion.Month);
+
+			if (!facturasDelMesYaFueronEmitidas)
+			{
+				var fechaInicio = new DateTime(fechaComparacion.Year, fechaComparacion.Month, 1);
+				var fechaFin = fechaInicio.AddMonths(1);
+				context.Database.ExecuteSqlInterpolated($"exec CreacionFacturas {fechaInicio.ToString("yyyy-MM-dd")}, {fechaFin.ToString("yyyy-MM-dd")}");
 			}
 		}
 	}
