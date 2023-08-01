@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -63,7 +64,9 @@ public class LimitarPeticionesMiddleware
 		}
 
 		var llave = llaveStringValues[0];
-		var llaveDB = await context.LlavesAPI.FirstOrDefaultAsync(x => x.Llave == llave);
+		var llaveDB = await context.LlavesAPI.Include(x => x.RestriccionesDominio)
+											 .Include(x => x.RestriccionesIP)
+											 .FirstOrDefaultAsync(x => x.Llave == llave);
 
 		if (llaveDB == null)
 		{
@@ -93,6 +96,14 @@ public class LimitarPeticionesMiddleware
 			}
 		}
 
+		var superaRestricciones = PeticionSuperaAlgunaDeLasPeticiones(llaveDB, httpContext);
+
+		if (!superaRestricciones)
+		{
+			httpContext.Response.StatusCode = 403;
+			return;
+		}
+
 		var peticion = new Peticion()
 		{
 			LlaveId = llaveDB.Id,
@@ -102,6 +113,40 @@ public class LimitarPeticionesMiddleware
 		await context.SaveChangesAsync();
 
 		await siguiente(httpContext);
+	}
+
+	private bool PeticionSuperaAlgunaDeLasPeticiones(LlaveAPI llaveAPI, HttpContext httpContext)
+	{
+		var hayRestricciones = llaveAPI.RestriccionesDominio.Any() || llaveAPI.RestriccionesIP.Any();
+
+		if (!hayRestricciones)
+		{
+			return true;
+		}
+
+		var peticionSuperaRestriccionesDominio = PeticionSuperaRestriccionesDominio(llaveAPI.RestriccionesDominio, httpContext);
+		return peticionSuperaRestriccionesDominio;
+	}
+
+	private bool PeticionSuperaRestriccionesDominio(List<RestriccionDominio> restricciones, HttpContext httpContext)
+	{
+		if (restricciones == null || restricciones.Count == 0)
+		{
+			return false;
+		}
+
+		var referer = httpContext.Request.Headers["Referer"].ToString();
+
+		if (referer == string.Empty)
+		{
+			return false;
+		}
+
+		Uri myUri = new Uri(referer);
+		string host = myUri.Host;
+
+		var superaRestriccion = restricciones.Any(x => x.Dominio == host);
+		return superaRestriccion;
 	}
 }
 
